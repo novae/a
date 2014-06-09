@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <!--<![endif]-->
+<html ng-app = "sourcodemessage"> 
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    </head>
+    <body ng-controller="MainCtrl">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2 col-md-offset-4">
+                    <div class="checkbox" ng-repeat="usuario in usuarios">
+                        <label>
+                          <input type="checkbox" ng-model="usuario.isChecked" ng-change="ischecked()"> {{ usuario.nombre }} -->> {{usuario.isChecked}}
+                        </label>
+                    </div>
+                    <p>
+                        <textarea class="form-control" rows="3"  ng-model="usuario.mensaje"></textarea><br>
+                        {{usuario.mensaje}}
+                        <button class="btn btn-default" ng-click="sendMessage()">Submit</button>
+                    </p>
+                </div>   
+                <div class="col-md-2 col-md-offset-4">
+                    <h3>Remisores</h3>
+                    <pre ng-repeat="remisor in remisores">{{remisor.regId}}</pre>
+                </div>
+                
+            </div>
+        </div>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+      
+        
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')
+        </script>
+
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.17/angular.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.17/angular-route.js"></script>
+        
+        <script src="js/core.js"></script>
+    </body>
+</html>

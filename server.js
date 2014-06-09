@@ -5,6 +5,7 @@ var logger         = require('morgan');
 var bodyParser     = require('body-parser');
 var methodOverride = require('method-override');
 var gcm = require('node-gcm');
+//var ejs = require('ejs');
 
 var message = new gcm.Message();
  
@@ -20,6 +21,9 @@ var app = express();
 var port = process.env.PORT || 3000;
 /*jc*/
 app.set('json spaces', 40);
+app.set('views', __dirname + '/public');
+app.use(express.static('./public'));
+app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(bodyParser());
@@ -27,7 +31,28 @@ app.use(methodOverride());
 app.use(cors());
 
 
-app.get('/', function(req, res) {
+
+
+app.get('/allusers',function(req,res){
+    Usuario.find( function ( err, todos){
+        if(err){
+            res.send(err);
+        }
+        res.json(todos);
+    });
+});
+
+
+app.post('/tosend',function(req,res){
+    console.log("en send");
+    for (var user in req.body) {
+        console.log( JSON.stringify(user.nombre) + " -> " +  JSON.stringify(req.body[user]));
+    }
+    
+});
+
+
+/*app.get('/', function(req, res) {
     Usuario.find(function(err,usuarios){
     	if(err){
     		console.log(err);
@@ -38,6 +63,8 @@ app.get('/', function(req, res) {
     
 });
 
+*/
+/*
 app.get('/send', function(req, res) {
     Usuario.find(function(err,usuarios){
     	if(err){
@@ -68,9 +95,9 @@ app.get('/send', function(req, res) {
     	}
     });
 });
+*/
 
-
-
+/*
 app.post('/login',cors(), function(req, res,next) {
     Usuario.findOne({ 'nombre':req.body.nombre },function(err,usuarios){
     	if(err){
@@ -79,10 +106,10 @@ app.post('/login',cors(), function(req, res,next) {
     		if(usuarios){
 	    		var x = usuarios.toJSON();    		
 	    		if(x.pass == req.body.pass){
-	    			/*jc*/
+	    			
 	    			res.json({ login: 1 });
 	    		}else{
-	    			/*jc*/
+	    			
 	    			res.json({ login: 1 });
 	    		}
 	    	}else{
@@ -109,6 +136,11 @@ app.post('/signUp',cors(), function(req, res,next) {
 
 
 });
+*/
+app.get('/',function(req,res){
+    res.sendfile('./public/allusers.html');
+});
+
 
 app.listen(port);
 console.log('Magic happens on port ' + port);
