@@ -44,10 +44,25 @@ app.get('/allusers',function(req,res){
 
 
 app.post('/tosend',function(req,res){
-    console.log("en send");
-    for (var user in req.body) {
-        console.log( JSON.stringify(user.nombre) + " -> " +  JSON.stringify(req.body[user]));
+    console.log(req.body);
+    //req.body
+    //req.params
+    //req.jquery
+
+    /*for (var user in req.body) {
+        console.log(user.nombre);
     }
+    */
+    var data = req.body;
+    console.log(data.length);
+        //console.log("User " , data[key] , " is #" , key); // "User john is #234"
+        
+    for(var i=0; i<data.length-1; i++){
+        console.log(data[i].nombre);
+    }
+    console.log(data[data.length-1].mensaje);
+
+
     
 });
 
@@ -97,7 +112,7 @@ app.get('/send', function(req, res) {
 });
 */
 
-/*
+
 app.post('/login',cors(), function(req, res,next) {
     Usuario.findOne({ 'nombre':req.body.nombre },function(err,usuarios){
     	if(err){
@@ -110,7 +125,7 @@ app.post('/login',cors(), function(req, res,next) {
 	    			res.json({ login: 1 });
 	    		}else{
 	    			
-	    			res.json({ login: 1 });
+	    			res.json({ login: 0 });
 	    		}
 	    	}else{
 	    		res.send(false);
@@ -119,6 +134,7 @@ app.post('/login',cors(), function(req, res,next) {
     });
 
 });
+/*
 
 app.post('/signUp',cors(), function(req, res,next) {
     new Usuario({ 

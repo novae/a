@@ -16,6 +16,7 @@ app.controller('MainCtrl',function($scope,$http){
 
 	// crea una arreglo con los usuarios destinatarios del mensaje
 	$scope.ischecked = function(){
+		
 		$scope.remisores = [];
 		angular.forEach($scope.usuarios,function(usuario){
 			if(usuario.isChecked == true){
@@ -25,9 +26,9 @@ app.controller('MainCtrl',function($scope,$http){
 	}
 	//enviar un mensaje al usuario(s) seleccionado.
 	$scope.sendMessage = function() {
-		var jsonData = JSON.stringify({mensaje : $scope.usuario.mensaje});
-		console.log(jsonData);
+		var jsonData = [{mensaje : $scope.usuario.mensaje}];
 		$scope.remisores = $scope.remisores.concat(jsonData);
+		console.log($scope.remisores);
 		
 		$http.post('/tosend', $scope.remisores)
 		.success(function(data) {
