@@ -43,116 +43,97 @@ app.get('/allusers',function(req,res){
 });
 
 
-app.post('/tosend',function(req,res){
-    console.log(req.body);
-    //req.body
-    //req.params
-    //req.jquery
+//ruta para enviar mensajes.
 
-    /*for (var user in req.body) {
-        console.log(user.nombre);
-    }
-    */
+app.post('/send',function(req,res){
     var data = req.body;
-    console.log(data.length);
-        //console.log("User " , data[key] , " is #" , key); // "User john is #234"
-        
+    var registrationIds = [];
+    var nombres = [];
     for(var i=0; i<data.length-1; i++){
-        console.log(data[i].nombre);
+        registrationIds.push(data[i].regId);
+        nombres.push(data[i].nombre);
     }
-    console.log(data[data.length-1].mensaje);
+     
+   
+    for(var i=0; i<nombres.length-1; i++){
+        // Value the payload data to send...
+        //message.addData('message',"dos \u270C Peace, Love \u2764 and PhoneGap \u2706!");
+        message.addData('message','saludos '+nombres[i]+' '+data[data.length-1].mensaje);
+        message.addData('title','tareas para hoy');
+        message.addData('msgcnt','3'); // Shows up in the notification in the status bar
+        message.addData('soundname','beep.wav'); //Sound to play upon notification receipt - put in the www folder in app
+        //message.collapseKey = 'demo';
+        //message.delayWhileIdle = true; //Default is false
+        message.timeToLive = 3000;// Duration in seconds to hold in GCM and retry before timing out. Default 4 weeks (2,419,200 seconds) if not specified.
 
 
-    
+        sender.send(message, registrationIds, 4, function (result) {
+            console.log(result);
+        });
+    }       
+   
+    res.send('Mensajes enviados');
 });
 
 
-/*app.get('/', function(req, res) {
-    Usuario.find(function(err,usuarios){
-    	if(err){
-    		console.log(err);
-    	}else{
-    		res.json(usuarios);
-    	}
-    });
-    
-});
-
-*/
-/*
-app.get('/send', function(req, res) {
-    Usuario.find(function(err,usuarios){
-    	if(err){
-    		console.log(err);
-    	}else{
-    		
-    		var registrationIds = [];
-			
-			for(i in usuarios){
-				registrationIds.push(usuarios[i].regId);
-			}
-			// Value the payload data to send...
-			message.addData('message',"dos \u270C Peace, Love \u2764 and PhoneGap \u2706!");
-			message.addData('title','ese sam' );
-			message.addData('msgcnt','3'); // Shows up in the notification in the status bar
-			message.addData('soundname','beep.wav'); //Sound to play upon notification receipt - put in the www folder in app
-			//message.collapseKey = 'demo';
-			//message.delayWhileIdle = true; //Default is false
-			message.timeToLive = 3000;// Duration in seconds to hold in GCM and retry before timing out. Default 4 weeks (2,419,200 seconds) if not specified.
 
 
-			sender.send(message, registrationIds, 4, function (result) {
-			    console.log(result);
-			});
 
+    app.post('/login',cors(), function(req, res,next) {
+        Usuario.findOne({ 'nombre':req.body.nombre },function(err,usuarios){
+        	if(err){
+        		console.log(err);
+        	}else{
+        		if(usuarios){
+    	    		var x = usuarios.toJSON();    		
+    	    		if(x.pass == req.body.pass){
+    	    			
+    	    			res.json({ login: 1 });
+    	    		}else{
+    	    			
+    	    			res.json({ login: 0 });
+    	    		}
+    	    	}else{
+    	    		res.send(false);
+    	    	}
+        	}
+        });
 
-			res.send('Mensajes enviados');
-    	}
-    });
-});
-*/
-
-
-app.post('/login',cors(), function(req, res,next) {
-    Usuario.findOne({ 'nombre':req.body.nombre },function(err,usuarios){
-    	if(err){
-    		console.log(err);
-    	}else{
-    		if(usuarios){
-	    		var x = usuarios.toJSON();    		
-	    		if(x.pass == req.body.pass){
-	    			
-	    			res.json({ login: 1 });
-	    		}else{
-	    			
-	    			res.json({ login: 0 });
-	    		}
-	    	}else{
-	    		res.send(false);
-	    	}
-    	}
-    });
-
-});
-/*
-
-app.post('/signUp',cors(), function(req, res,next) {
-    new Usuario({ 
-    	nombre : req.body.nombre,
-    	email : req.body.email,
-    	pass : req.body.pass,
-    	regId: req.body.regId
-    }).save(function(err){
-    	if(err){
-    		res.send(false);
-    	}else{
-    		res.send(true);
-    	}
     });
 
 
-});
-*/
+    app.post('/signUp',cors(), function(req, res,next) {
+        new Usuario({ 
+        	nombre : req.body.nombre,
+        	email : req.body.email,
+        	pass : req.body.pass,
+            confirm: req.body.confirm,
+        	regId: req.body.regId
+        }).save(function(err){
+        	if(err){
+        		res.json({ registro: 0 });
+        	}else{
+        		res.json({ registro: 1 });
+        	}
+        });
+    });
+
+    app.post('/confirmarDuplicados',cors(), function(req, res,next) {
+        Usuario.findOne({'email':req.body.email},function(err,usuario){
+            if(err){
+                console.log(err);
+            } else {
+                if(usuario){
+                    res.json({duplicado:1});
+                } else {
+                    res.json({duplicado:0});
+                }
+            }
+        });
+    });
+
+
+
 app.get('/',function(req,res){
     res.sendfile('./public/allusers.html');
 });
